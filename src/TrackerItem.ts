@@ -1,4 +1,4 @@
-export interface InitiativeItem {
+export interface TrackerItem {
   count: string;
   name: string;
   id: string;

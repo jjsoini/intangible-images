@@ -5,26 +5,26 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 
 import VisibilityOffRounded from "@mui/icons-material/VisibilityOffRounded";
 
-import { InitiativeItem } from "./InitiativeItem";
+import { TrackerItem } from "./TrackerItem";
 
-type InitiativeListItemProps = {
-  initiative: InitiativeItem;
+type TrackerListItemProps = {
+  tracker: TrackerItem;
   onCountChange: (count: string) => void;
   showHidden: boolean;
 };
 
-export function InitiativeListItem({
-  initiative,
+export function TrackerListItem({
+  tracker,
   onCountChange,
   showHidden,
-}: InitiativeListItemProps) {
-  if (!initiative.visible && !showHidden) {
+}: TrackerListItemProps) {
+  if (!tracker.visible && !showHidden) {
     return null;
   }
 
   return (
     <ListItem
-      key={initiative.id}
+      key={tracker.id}
       secondaryAction={
         <Input
           disableUnderline
@@ -34,7 +34,7 @@ export function InitiativeListItem({
               textAlign: "right",
             },
           }}
-          value={initiative.count}
+          value={tracker.count}
           onChange={(e) => {
             const newCount = e.target.value;
             onCountChange(newCount);
@@ -42,17 +42,17 @@ export function InitiativeListItem({
         />
       }
       divider
-      selected={initiative.active}
+      selected={tracker.active}
       sx={{
         pr: "64px",
       }}
     >
-      {!initiative.visible && showHidden && (
+      {!tracker.visible && showHidden && (
         <ListItemIcon sx={{ minWidth: "30px", opacity: "0.5" }}>
           <VisibilityOffRounded fontSize="small" />
         </ListItemIcon>
       )}
-      <ListItemText sx={{ color: "text.primary" }} primary={initiative.name} />
+      <ListItemText sx={{ color: "text.primary" }} primary={tracker.name} />
     </ListItem>
   );
 }

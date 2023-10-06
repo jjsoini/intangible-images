@@ -4,7 +4,7 @@ import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
 
-export function InitiativeHeader({
+export function TrackerHeader({
   subtitle,
   action,
 }: {
@@ -14,7 +14,7 @@ export function InitiativeHeader({
   return (
     <>
       <CardHeader
-        title="Initiative"
+        title="Tracker"
         action={action}
         titleTypographyProps={{
           sx: {

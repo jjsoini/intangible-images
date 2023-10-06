@@ -9,14 +9,14 @@ import SkipNextRounded from "@mui/icons-material/SkipNextRounded";
 
 import OBR, { isImage, Item, Player } from "@owlbear-rodeo/sdk";
 
-import { InitiativeItem } from "./InitiativeItem";
+import { TrackerItem } from "./TrackerItem";
 
 import addIcon from "./assets/add.svg";
 import removeIcon from "./assets/remove.svg";
 
-import { InitiativeListItem } from "./InitiativeListItem";
+import { TrackerListItem } from "./TrackerListItem";
 import { getPluginId } from "./getPluginId";
-import { InitiativeHeader } from "./InitiativeHeader";
+import { TrackerHeader } from "./TrackerHeader";
 import { isPlainObject } from "./isPlainObject";
 
 /** Check that the item metadata is in the correct format */
@@ -30,8 +30,8 @@ function isMetadata(
   );
 }
 
-export function InitiativeTracker() {
-  const [initiativeItems, setInitiativeItems] = useState<InitiativeItem[]>([]);
+export function Tracker() {
+  const [trackerItems, setTrackerItems] = useState<TrackerItem[]>([]);
   const [role, setRole] = useState<"GM" | "PLAYER">("PLAYER");
 
   useEffect(() => {
@@ -44,12 +44,12 @@ export function InitiativeTracker() {
 
   useEffect(() => {
     const handleItemsChange = async (items: Item[]) => {
-      const initiativeItems: InitiativeItem[] = [];
+      const trackerItems: TrackerItem[] = [];
       for (const item of items) {
         if (isImage(item)) {
           const metadata = item.metadata[getPluginId("metadata")];
           if (isMetadata(metadata)) {
-            initiativeItems.push({
+            trackerItems.push({
               id: item.id,
               count: metadata.count,
               name: item.text.plainText || item.name,
@@ -59,7 +59,7 @@ export function InitiativeTracker() {
           }
         }
       }
-      setInitiativeItems(initiativeItems);
+      setTrackerItems(trackerItems);
     };
 
     OBR.scene.items.getItems().then(handleItemsChange);
@@ -71,7 +71,7 @@ export function InitiativeTracker() {
       icons: [
         {
           icon: addIcon,
-          label: "Add to Initiative",
+          label: "Add to Tracker",
           filter: {
             every: [
               { key: "layer", value: "CHARACTER", coordinator: "||" },
@@ -84,7 +84,7 @@ export function InitiativeTracker() {
         },
         {
           icon: removeIcon,
-          label: "Remove from Initiative",
+          label: "Remove from Tracker",
           filter: {
             every: [
               { key: "layer", value: "CHARACTER", coordinator: "||" },
@@ -98,13 +98,13 @@ export function InitiativeTracker() {
       id: getPluginId("menu/toggle"),
       onClick(context) {
         OBR.scene.items.updateItems(context.items, (items) => {
-          // Check whether to add the items to initiative or remove them
-          const addToInitiative = items.every(
+          // Check whether to add the items to tracker or remove them
+          const addToTracker = items.every(
             (item) => item.metadata[getPluginId("metadata")] === undefined
           );
           let count = 0;
           for (let item of items) {
-            if (addToInitiative) {
+            if (addToTracker) {
               item.metadata[getPluginId("metadata")] = {
                 count: `${count}`,
                 active: false,
@@ -121,14 +121,14 @@ export function InitiativeTracker() {
 
   function handleNextClick() {
     // Get the next index to activate
-    const sorted = initiativeItems.sort(
+    const sorted = trackerItems.sort(
       (a, b) => parseFloat(b.count) - parseFloat(a.count)
     );
     const nextIndex =
-      (sorted.findIndex((initiative) => initiative.active) + 1) % sorted.length;
+      (sorted.findIndex((tracker) => tracker.active) + 1) % sorted.length;
 
     // Set local items immediately
-    setInitiativeItems((prev) => {
+    setTrackerItems((prev) => {
       return prev.map((init, index) => ({
         ...init,
         active: index === nextIndex,
@@ -136,7 +136,7 @@ export function InitiativeTracker() {
     });
     // Update the scene items with the new active status
     OBR.scene.items.updateItems(
-      initiativeItems.map((init) => init.id),
+      trackerItems.map((init) => init.id),
       (items) => {
         for (let i = 0; i < items.length; i++) {
           let item = items[i];
@@ -149,17 +149,17 @@ export function InitiativeTracker() {
     );
   }
 
-  function handleInitiativeCountChange(id: string, newCount: string) {
+  function handleTrackerCountChange(id: string, newCount: string) {
     // Set local items immediately
-    setInitiativeItems((prev) =>
-      prev.map((initiative) => {
-        if (initiative.id === id) {
+    setTrackerItems((prev) =>
+      prev.map((tracker) => {
+        if (tracker.id === id) {
           return {
-            ...initiative,
+            ...tracker,
             count: newCount,
           };
         } else {
-          return initiative;
+          return tracker;
         }
       })
     );
@@ -201,17 +201,17 @@ export function InitiativeTracker() {
 
   return (
     <Stack height="100vh">
-      <InitiativeHeader
+      <TrackerHeader
         subtitle={
-          initiativeItems.length === 0
-            ? "Select a character to start initiative"
+          trackerItems.length === 0
+            ? "Select a character to start tracker"
             : undefined
         }
         action={
           <IconButton
             aria-label="next"
             onClick={handleNextClick}
-            disabled={initiativeItems.length === 0}
+            disabled={trackerItems.length === 0}
           >
             <SkipNextRounded />
           </IconButton>
@@ -219,14 +219,14 @@ export function InitiativeTracker() {
       />
       <Box sx={{ overflowY: "auto" }}>
         <List ref={listRef}>
-          {initiativeItems
+          {trackerItems
             .sort((a, b) => parseFloat(b.count) - parseFloat(a.count))
-            .map((initiative) => (
-              <InitiativeListItem
-                key={initiative.id}
-                initiative={initiative}
+            .map((tracker) => (
+              <TrackerListItem
+                key={tracker.id}
+                tracker={tracker}
                 onCountChange={(newCount) => {
-                  handleInitiativeCountChange(initiative.id, newCount);
+                  handleTrackerCountChange(tracker.id, newCount);
                 }}
                 showHidden={role === "GM"}
               />

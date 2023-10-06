@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import OBR from "@owlbear-rodeo/sdk";
-import { InitiativeHeader } from "./InitiativeHeader";
-import { InitiativeTracker } from "./InitiativeTracker";
+import { TrackerHeader } from "./TrackerHeader";
+import { Tracker } from "./Tracker";
 
 export function App() {
   const [sceneReady, setSceneReady] = useState(false);
@@ -12,11 +12,11 @@ export function App() {
   }, []);
 
   if (sceneReady) {
-    return <InitiativeTracker />;
+    return <Tracker />;
   } else {
     // Show a basic header when the scene isn't ready
     return (
-      <InitiativeHeader subtitle="Open a scene to use the initiative tracker" />
+      <TrackerHeader subtitle="Open a scene to use the tracker tracker" />
     );
   }
 }
