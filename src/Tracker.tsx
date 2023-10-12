@@ -133,6 +133,23 @@ export function Tracker() {
     );
   }
 
+  function handleListItemDelete(id:string) {
+    // Clear all
+    OBR.scene.items.updateItems(
+      trackerItems.map((tracker) => tracker.id),
+      (items) => {
+        for (let i = 0; i < items.length; i++) {
+          let item = items[i];
+          const metadata = item.metadata[getPluginId("metadata")];
+          if (isMetadata(metadata) && id === item.id) {
+            delete item.metadata[getPluginId("metadata")];
+            item.disableHit = false;
+          }
+        }
+      }
+    );    
+  }
+
   const listRef = useRef<HTMLUListElement>(null);
   useEffect(() => {
     if (listRef.current && ResizeObserver) {
@@ -169,7 +186,7 @@ export function Tracker() {
             : undefined}
         action = {
           <IconButton
-            aria-label="next"
+            aria-label="delete"
             onClick={handleHeaderAction}
             disabled={trackerItems.length === 0}
           >
@@ -184,6 +201,9 @@ export function Tracker() {
               <TrackerListItem
                 key={tracker.id}
                 tracker={tracker}
+                actionHandler={() => {
+                  handleListItemDelete(tracker.id);
+                }}
                 showHidden={role === "GM"}
                 ignore={tracker.ignore}
               />
