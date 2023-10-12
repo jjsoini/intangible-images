@@ -1,12 +1,12 @@
 {
-  "name": "Click-through images",
+  "name": "Intangible images",
   "version": "1.0.0",
   "manifest_version": 1,
   "author": "Jussi Soini",
   "icon": "/logo.png",
-  "description": "Remove images from hit detection so you can put them on top",
+  "description": "Make images untouchable. Great for trees, effects etc.",
   "action": {
-    "title": "Click-through images",
+    "title": "Intangible images",
     "icon": "/icon.svg",
     "popover": "/",
     "height": 129,

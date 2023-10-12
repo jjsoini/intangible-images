@@ -17,7 +17,7 @@ export function TrackerHeader({
   return (
     <>
       <CardHeader
-        title="Toggle clickthrough"
+        title="Intangible images"
         action={action}
         titleTypographyProps={{
           sx: {

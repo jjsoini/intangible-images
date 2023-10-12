@@ -72,7 +72,7 @@ export function Tracker() {
       icons: [
         {
           icon: addIcon,
-          label: "Make unclickable",
+          label: "Make intangible",
           filter: {
             every: [
               { key: "type", value: "IMAGE" },
@@ -83,7 +83,7 @@ export function Tracker() {
         },
         {
           icon: removeIcon,
-          label: "Remove from Initiative",
+          label: "Make tangible",
           filter: {
             every: [
               { key: "type", value: "IMAGE" },
@@ -165,7 +165,7 @@ export function Tracker() {
       <TrackerHeader
         subtitle={
           trackerItems.length === 0
-            ? "Select images on map and toggle clickthrough."
+            ? "Select images on map and toggle them intangible"
             : undefined}
         action = {
           <IconButton

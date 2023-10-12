@@ -16,7 +16,7 @@ export function App() {
   } else {
     // Show a basic header when the scene isn't ready
     return (
-      <TrackerHeader subtitle="Open a scene to use the tracker tracker" />
+      <TrackerHeader subtitle="Open a scene to use this plugin" />
     );
   }
 }
