@@ -4,10 +4,10 @@ import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
+import Switch from '@mui/material/Switch';
+import DeleteForever from "@mui/icons-material/DeleteForever";
 
-import SkipNextRounded from "@mui/icons-material/SkipNextRounded";
-
-import OBR, { isImage, Item, Player } from "@owlbear-rodeo/sdk";
+import OBR, { isImage, Item, Player, Metadata } from "@owlbear-rodeo/sdk";
 
 import { TrackerItem } from "./TrackerItem";
 
@@ -22,10 +22,10 @@ import { isPlainObject } from "./isPlainObject";
 /** Check that the item metadata is in the correct format */
 function isMetadata(
   metadata: unknown
-): metadata is { count: string; active: boolean } {
+): metadata is { ignore: boolean; active: boolean } {
   return (
     isPlainObject(metadata) &&
-    typeof metadata.count === "string" &&
+    typeof metadata.ignore === "boolean" &&
     typeof metadata.active === "boolean"
   );
 }
@@ -33,6 +33,7 @@ function isMetadata(
 export function Tracker() {
   const [trackerItems, setTrackerItems] = useState<TrackerItem[]>([]);
   const [role, setRole] = useState<"GM" | "PLAYER">("PLAYER");
+  const [unclickable, setUnclickable] = useState(false);
 
   useEffect(() => {
     const handlePlayerChange = (player: Player) => {
@@ -42,6 +43,7 @@ export function Tracker() {
     return OBR.player.onChange(handlePlayerChange);
   }, []);
 
+  
   useEffect(() => {
     const handleItemsChange = async (items: Item[]) => {
       const trackerItems: TrackerItem[] = [];
@@ -51,10 +53,9 @@ export function Tracker() {
           if (isMetadata(metadata)) {
             trackerItems.push({
               id: item.id,
-              count: metadata.count,
+              ignore: metadata.ignore,
               name: item.text.plainText || item.name,
               active: metadata.active,
-              visible: item.visible,
             });
           }
         }
@@ -71,11 +72,9 @@ export function Tracker() {
       icons: [
         {
           icon: addIcon,
-          label: "Add to Tracker",
+          label: "Make unclickable",
           filter: {
             every: [
-              { key: "layer", value: "CHARACTER", coordinator: "||" },
-              { key: "layer", value: "MOUNT" },
               { key: "type", value: "IMAGE" },
               { key: ["metadata", getPluginId("metadata")], value: undefined },
             ],
@@ -84,16 +83,14 @@ export function Tracker() {
         },
         {
           icon: removeIcon,
-          label: "Remove from Tracker",
+          label: "Remove from Initiative",
           filter: {
             every: [
-              { key: "layer", value: "CHARACTER", coordinator: "||" },
-              { key: "layer", value: "MOUNT" },
               { key: "type", value: "IMAGE" },
             ],
             permissions: ["UPDATE"],
           },
-        },
+        },        
       ],
       id: getPluginId("menu/toggle"),
       onClick(context) {
@@ -102,16 +99,16 @@ export function Tracker() {
           const addToTracker = items.every(
             (item) => item.metadata[getPluginId("metadata")] === undefined
           );
-          let count = 0;
           for (let item of items) {
             if (addToTracker) {
               item.metadata[getPluginId("metadata")] = {
-                count: `${count}`,
+                ignore: true,
                 active: false,
               };
-              count += 1;
+              item.disableHit = true;
             } else {
               delete item.metadata[getPluginId("metadata")];
+              item.disableHit = false;
             }
           }
         });
@@ -119,59 +116,21 @@ export function Tracker() {
     });
   }, []);
 
-  function handleNextClick() {
-    // Get the next index to activate
-    const sorted = trackerItems.sort(
-      (a, b) => parseFloat(b.count) - parseFloat(a.count)
-    );
-    const nextIndex =
-      (sorted.findIndex((tracker) => tracker.active) + 1) % sorted.length;
-
-    // Set local items immediately
-    setTrackerItems((prev) => {
-      return prev.map((init, index) => ({
-        ...init,
-        active: index === nextIndex,
-      }));
-    });
-    // Update the scene items with the new active status
+  function handleHeaderAction() {
+    // Clear all
     OBR.scene.items.updateItems(
-      trackerItems.map((init) => init.id),
+      trackerItems.map((tracker) => tracker.id),
       (items) => {
         for (let i = 0; i < items.length; i++) {
           let item = items[i];
           const metadata = item.metadata[getPluginId("metadata")];
           if (isMetadata(metadata)) {
-            metadata.active = i === nextIndex;
+            delete item.metadata[getPluginId("metadata")];
+            item.disableHit = false;
           }
         }
       }
     );
-  }
-
-  function handleTrackerCountChange(id: string, newCount: string) {
-    // Set local items immediately
-    setTrackerItems((prev) =>
-      prev.map((tracker) => {
-        if (tracker.id === id) {
-          return {
-            ...tracker,
-            count: newCount,
-          };
-        } else {
-          return tracker;
-        }
-      })
-    );
-    // Sync changes over the network
-    OBR.scene.items.updateItems([id], (items) => {
-      for (let item of items) {
-        const metadata = item.metadata[getPluginId("metadata")];
-        if (isMetadata(metadata)) {
-          metadata.count = newCount;
-        }
-      }
-    });
   }
 
   const listRef = useRef<HTMLUListElement>(null);
@@ -199,36 +158,34 @@ export function Tracker() {
     }
   }, []);
 
+  const label = { inputProps: { 'aria-label': 'Switch demo' } };
+  
   return (
     <Stack height="100vh">
       <TrackerHeader
         subtitle={
           trackerItems.length === 0
-            ? "Select a character to start tracker"
-            : undefined
-        }
-        action={
+            ? "Select images on map and toggle clickthrough."
+            : undefined}
+        action = {
           <IconButton
             aria-label="next"
-            onClick={handleNextClick}
+            onClick={handleHeaderAction}
             disabled={trackerItems.length === 0}
           >
-            <SkipNextRounded />
+            <DeleteForever />
           </IconButton>
         }
       />
       <Box sx={{ overflowY: "auto" }}>
         <List ref={listRef}>
           {trackerItems
-            .sort((a, b) => parseFloat(b.count) - parseFloat(a.count))
             .map((tracker) => (
               <TrackerListItem
                 key={tracker.id}
                 tracker={tracker}
-                onCountChange={(newCount) => {
-                  handleTrackerCountChange(tracker.id, newCount);
-                }}
                 showHidden={role === "GM"}
+                ignore={tracker.ignore}
               />
             ))}
         </List>

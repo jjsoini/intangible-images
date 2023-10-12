@@ -1,8 +1,11 @@
 import React from "react";
+import Switch from '@mui/material/Switch';
 
 import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import Typography from "@mui/material/Typography";
+
+const switchLabel = { inputProps: { 'aria-label': 'Switch demo' } };
 
 export function TrackerHeader({
   subtitle,
@@ -14,17 +17,19 @@ export function TrackerHeader({
   return (
     <>
       <CardHeader
-        title="Tracker"
+        title="Toggle clickthrough"
         action={action}
         titleTypographyProps={{
           sx: {
-            fontSize: "1.125rem",
+            fontSize: "0.9rem",
             fontWeight: "bold",
             lineHeight: "32px",
             color: "text.primary",
           },
         }}
       />
+      
+      
       <Divider variant="middle" />
       {subtitle && (
         <Typography

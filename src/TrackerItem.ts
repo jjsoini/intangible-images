@@ -1,7 +1,6 @@
 export interface TrackerItem {
-  count: string;
+  ignore: boolean;
   name: string;
   id: string;
   active: boolean;
-  visible: boolean;
 }
