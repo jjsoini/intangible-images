@@ -5,7 +5,8 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import Switch from '@mui/material/Switch';
-import Lock from "@mui/icons-material/Lock";
+import DoNotTouchIcon from "@mui/icons-material/DoNotTouch";
+import PanToolIcon from "@mui/icons-material/PanTool";
 import Tooltip from '@mui/material/Tooltip';
 import OBR, { isImage, Item, Player, Metadata } from "@owlbear-rodeo/sdk";
 
@@ -179,22 +180,26 @@ export function Tracker() {
   
   return (
     <Stack height="100vh">
-      <TrackerHeader
+      <TrackerHeader 
         subtitle={
           trackerItems.length === 0
-            ? "You have not added any images"
+            ? "Make images intangible from their context menu"
             : "Release all images"}
         action = {
+          trackerItems.length === 0
+            ? undefined
+          : 
           <Tooltip title="Release all" placement="left">
-            <IconButton
-              size="small"
-              aria-label="delete"
-              onClick={handleHeaderAction}
-              disabled={trackerItems.length === 0}
-            >
-              <Lock />
-            </IconButton>
-          </Tooltip>
+          <IconButton 
+            size="large"
+            aria-label="release all"
+            sx={{marginRight: "4px"}}
+            onClick={handleHeaderAction}
+            disabled={trackerItems.length === 0}
+          >
+            <PanToolIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
         }
       />
       <Box sx={{ overflowY: "auto" }}>

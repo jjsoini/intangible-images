@@ -1,7 +1,7 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
-import Lock from "@mui/icons-material/Lock";
+import DoNotTouchIcon from "@mui/icons-material/DoNotTouch";
 import Tooltip from '@mui/material/Tooltip';
 
 
@@ -34,8 +34,8 @@ export function TrackerListItem({
       }}
       secondaryAction={
         <Tooltip title="Release" placement="left">
-          <IconButton size="small" sx={{marginRight: "-2px"}} edge="end" aria-label="remove" onClick={actionHandler}>
-            <Lock fontSize="small" sx={{opacity: 0.5}} />
+          <IconButton sx={{marginRight: "-2px"}} edge="end" aria-label="release" onClick={actionHandler}>
+            <DoNotTouchIcon sx={{opacity: 0.5}} />
           </IconButton>
         </Tooltip>
         

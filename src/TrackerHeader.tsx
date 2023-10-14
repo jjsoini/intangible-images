@@ -21,9 +21,10 @@ export function TrackerHeader({
         action={action}
         titleTypographyProps={{
           sx: {
-            fontSize: "0.75rem",
+            fontSize: "0.8rem",
             fontWeight: "normal",
             lineHeight: "1.5",
+            marginTop: "6px",
             color: "text.secondary",
             letterSpacing: "0.02em",
           },
