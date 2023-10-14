@@ -186,7 +186,7 @@ export function Tracker() {
             ? "Make images intangible from their context menu"
             : "Release all images"}
         action = {
-          trackerItems.length === 0
+          (trackerItems.length === 0 || role !== "GM")
             ? undefined
           : 
           <Tooltip title="Release all" placement="left">
