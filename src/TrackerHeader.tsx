@@ -17,33 +17,18 @@ export function TrackerHeader({
   return (
     <>
       <CardHeader
-        title="Intangible images"
+        title={subtitle}
         action={action}
         titleTypographyProps={{
           sx: {
-            fontSize: "0.9rem",
-            fontWeight: "bold",
-            lineHeight: "32px",
-            color: "text.primary",
+            fontSize: "0.75rem",
+            fontWeight: "normal",
+            lineHeight: "1.5",
+            color: "text.secondary",
+            letterSpacing: "0.02em",
           },
         }}
       />
-      
-      
-      <Divider variant="middle" />
-      {subtitle && (
-        <Typography
-          variant="caption"
-          sx={{
-            px: 2,
-            py: 1,
-            display: "inline-block",
-            color: "text.secondary",
-          }}
-        >
-          {subtitle}
-        </Typography>
-      )}
     </>
   );
 }

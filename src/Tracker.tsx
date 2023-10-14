@@ -5,8 +5,8 @@ import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
 import Switch from '@mui/material/Switch';
-import DeleteForever from "@mui/icons-material/DeleteForever";
-
+import Lock from "@mui/icons-material/Lock";
+import Tooltip from '@mui/material/Tooltip';
 import OBR, { isImage, Item, Player, Metadata } from "@owlbear-rodeo/sdk";
 
 import { TrackerItem } from "./TrackerItem";
@@ -163,14 +163,14 @@ export function Tracker() {
           // Set a minimum height of 64px
           const listHeight = Math.max(borderHeight, 64);
           // Set the action height to the list height + the card header height + the divider
-          OBR.action.setHeight(listHeight + 64 + 1);
+          OBR.action.setHeight(listHeight + 64 + 4);
         }
       });
       resizeObserver.observe(listRef.current);
       return () => {
         resizeObserver.disconnect();
         // Reset height when unmounted
-        OBR.action.setHeight(129);
+        OBR.action.setHeight(96);
       };
     }
   }, []);
@@ -182,16 +182,19 @@ export function Tracker() {
       <TrackerHeader
         subtitle={
           trackerItems.length === 0
-            ? "Select images on map and toggle them intangible"
-            : undefined}
+            ? "You have not added any images"
+            : "Release all images"}
         action = {
-          <IconButton
-            aria-label="delete"
-            onClick={handleHeaderAction}
-            disabled={trackerItems.length === 0}
-          >
-            <DeleteForever />
-          </IconButton>
+          <Tooltip title="Release all" placement="left">
+            <IconButton
+              size="small"
+              aria-label="delete"
+              onClick={handleHeaderAction}
+              disabled={trackerItems.length === 0}
+            >
+              <Lock />
+            </IconButton>
+          </Tooltip>
         }
       />
       <Box sx={{ overflowY: "auto" }}>

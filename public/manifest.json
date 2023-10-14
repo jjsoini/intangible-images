@@ -1,6 +1,6 @@
 {
   "name": "Intangible images",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "manifest_version": 1,
   "author": "Jussi Soini",
   "icon": "/logo.png",
@@ -9,7 +9,7 @@
     "title": "Intangible images",
     "icon": "/icon.svg",
     "popover": "/",
-    "height": 129,
+    "height": 96,
     "width": 250
   }
 }

@@ -1,10 +1,9 @@
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import DeleteForever from "@mui/icons-material/DeleteForever";
-import DeleteIcon from '@mui/icons-material/Delete';
+import Lock from "@mui/icons-material/Lock";
+import Tooltip from '@mui/material/Tooltip';
+
 
 import VisibilityOffRounded from "@mui/icons-material/VisibilityOffRounded";
 
@@ -34,9 +33,12 @@ export function TrackerListItem({
         pr: "64px"
       }}
       secondaryAction={
-        <IconButton       sx={{marginRight: "-7px"}} edge="end" aria-label="delete" onClick={actionHandler}>
-          <DeleteIcon />
-        </IconButton>
+        <Tooltip title="Release" placement="left">
+          <IconButton size="small" sx={{marginRight: "-2px"}} edge="end" aria-label="remove" onClick={actionHandler}>
+            <Lock fontSize="small" sx={{opacity: 0.5}} />
+          </IconButton>
+        </Tooltip>
+        
       }
 
     >
